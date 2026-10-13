@@ -1,0 +1,35 @@
+# One-command production setup on a VPS: the app + Caddy (automatic HTTPS).
+#   1. cp .env.example .env   and fill it in (including DOMAIN)
+#   2. docker compose -f docker-compose.standalone.yml up -d --build
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATA_DIR: /data
+      TRUST_PROXY: "1"
+    volumes:
+      - um-data:/data
+    expose:
+      - "3000"
+
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    depends_on:
+      - app
+    environment:
+      DOMAIN: ${DOMAIN:?Set DOMAIN in .env, e.g. app.unclutteredmind.com}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+
+volumes:
+  um-data:
+  caddy-data:
+  caddy-config:

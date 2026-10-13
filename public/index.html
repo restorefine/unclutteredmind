@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Uncluttered Mind</title>
+<meta name="description" content="Say or type everything in your head. Get a calm, planned day and gentle WhatsApp nudges.">
+<meta name="theme-color" content="#0E6E6A">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div class="wrap" id="app">
+  <div class="brand" aria-label="Uncluttered Mind">
+    <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true">
+      <path d="M4 9c3-3 5 3 8 0s5 3 8 0"/><path d="M4 16c3-2 5 2 8 0"/><path d="M4 23h24"/><circle cx="25" cy="10" r="3" fill="currentColor" stroke="none"/>
+    </svg>
+    <span>Uncluttered Mind</span>
+  </div>
+
+  <header>
+    <div class="day">
+      <div class="eyebrow" id="dateLine">Today</div>
+      <h1 id="dayName">Today</h1>
+    </div>
+    <div class="daynav">
+      <span class="pill" id="modePill"><i></i><span>Loading</span></span>
+      <button class="iconbtn" id="prevDay" aria-label="Previous day"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <button class="iconbtn" id="nextDay" aria-label="Next day"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M9 5l7 7-7 7"/></svg></button>
+    </div>
+  </header>
+
+  <div id="loginGate" hidden>
+    <form class="pinbox" id="loginForm">
+      <h2 class="gatetitle">Sign in</h2>
+      <label for="loginUser">Username</label>
+      <input id="loginUser" name="username" autocomplete="username webauthn" autocapitalize="none" spellcheck="false" required>
+      <label for="loginPass">Password</label>
+      <input id="loginPass" name="password" type="password" autocomplete="current-password" required>
+      <p class="formerror" id="loginError" role="alert" hidden></p>
+      <div class="loginrow">
+        <button class="btn primary" type="submit">Sign in</button>
+        <button class="btn passkeybtn" id="passkeyLogin" type="button" hidden aria-label="Sign in with a passkey (Face ID, Touch ID or fingerprint)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2"/><path d="M9 9.5v1M15 9.5v1M12 9.5v3.5h-1"/><path d="M9.5 16a3.5 3.5 0 0 0 5 0"/></svg><span>Passkey</span></button>
+      </div>
+      <p class="note" id="passkeyHint" hidden>Use Face ID, Touch ID, Windows Hello or your phone.</p>
+    </form>
+  </div>
+
+  <div id="passkeySetup" hidden>
+    <div class="pinbox">
+      <div class="setupicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2"/><path d="M9 9.5v1M15 9.5v1M12 9.5v3.5h-1"/><path d="M9.5 16a3.5 3.5 0 0 0 5 0"/></svg></div>
+      <h2 class="gatetitle">Sign in faster next time?</h2>
+      <p class="meta">Set up a passkey and you'll sign in with Face ID, Touch ID or your fingerprint instead of typing your password. Nothing about your face or finger leaves this device.</p>
+      <p class="formerror" id="setupError" role="alert" hidden></p>
+      <button class="btn primary" id="setupYes" type="button">Set up Face ID / passkey</button>
+      <button class="btn ghost" id="setupNo" type="button">Not now</button>
+    </div>
+  </div>
+
+  <div id="main">
+    <section class="energy" id="energyCard" hidden aria-labelledby="energyTitle">
+      <h2 id="energyTitle">How's your energy today?</h2>
+      <p class="meta">I'll shape the day around it.</p>
+      <div class="btnrow">
+        <button class="btn" data-energy="low">Low</button>
+        <button class="btn" data-energy="ok">OK</button>
+        <button class="btn" data-energy="high">High</button>
+      </div>
+    </section>
+
+    <section class="focus" id="focus" aria-live="polite"></section>
+
+    <div id="exampleBanner" class="banner" hidden>
+      <span>These are example tasks so you can see how it works.</span>
+      <button class="btn ghost" id="clearExamples">Clear examples</button>
+    </div>
+
+    <section class="dump">
+      <label for="dumpInput">What's on your mind?</label>
+      <div class="inputbox" id="inputbox">
+        <textarea id="dumpInput" placeholder="Say or type everything. e.g. call the bank at 2, gym after work, buy milk, finish the report by 5 — urgent"></textarea>
+        <div class="interim" id="interim"></div>
+        <div class="dumpbar">
+          <button class="mic" id="micBtn" type="button" aria-label="Start talking" aria-pressed="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+          </button>
+          <span class="hint" id="micHint">Tap to talk</span>
+          <button class="btn primary" id="sortBtn" type="button">Sort it</button>
+        </div>
+      </div>
+      <p class="help">Understands <b>at 3</b>, <b>half 4</b>, <b>by 5pm</b>, <b>tomorrow morning</b>, <b>after work</b>, <b>for an hour</b>, <b>every Tuesday</b>, <b>someday</b> and <b>urgent</b>. Everything else gets fitted into your free time with a breather in between.</p>
+      <div class="preview" id="preview" hidden>
+        <div class="eyebrow" id="previewTitle">Here's what I heard</div>
+        <ul id="previewList"></ul>
+        <div class="btnrow">
+          <button class="btn primary" id="addBtn" type="button">Add to my day</button>
+          <button class="btn ghost" id="cancelBtn" type="button">Start over</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="load" id="load"></div>
+
+    <section>
+      <h3 id="planTitle">The plan</h3>
+      <ul class="tl" id="timeline"></ul>
+    </section>
+
+    <section id="noRoom" hidden>
+      <h3>No room for these</h3>
+      <ul class="list" id="noRoomList"></ul>
+    </section>
+
+    <details id="somedayBox" hidden>
+      <summary id="somedaySummary">Someday</summary>
+      <ul class="list" id="somedayList"></ul>
+    </details>
+
+    <details id="doneBox" hidden>
+      <summary id="doneSummary">Done</summary>
+      <ul class="list" id="doneList"></ul>
+    </details>
+
+    <details id="settingsBox">
+      <summary>Settings, repeats and WhatsApp</summary>
+      <div class="settings">
+        <h4>Your day</h4>
+        <div class="field"><label for="sStart">My day starts</label><input type="time" id="sStart"></div>
+        <div class="field"><label for="sEnd">My day ends</label><input type="time" id="sEnd"></div>
+        <div class="field"><label for="sBuffer">Breather between tasks</label>
+          <select id="sBuffer"><option value="0">None</option><option value="5">5 min</option><option value="10">10 min</option><option value="15">15 min</option><option value="20">20 min</option></select></div>
+        <div class="field"><label for="sDur">If I don't say how long</label>
+          <select id="sDur"><option value="15">15 min</option><option value="30">30 min</option><option value="45">45 min</option><option value="60">1 hour</option></select></div>
+
+        <h4>WhatsApp nudges</h4>
+        <div class="field"><label for="sLead">Heads-up before a task</label>
+          <select id="sLead"><option value="0">Off</option><option value="5">5 min</option><option value="10">10 min</option><option value="15">15 min</option><option value="30">30 min</option></select></div>
+        <div class="field"><label for="sDigest">Morning plan at</label><input type="time" id="sDigest"></div>
+        <div class="field"><label for="sEnergy">Ask about my energy</label><select id="sEnergy"><option value="1">On</option><option value="0">Off</option></select></div>
+        <div class="field"><label for="sNudge">Nudge again if I don't reply</label><select id="sNudge"><option value="1">On</option><option value="0">Off</option></select></div>
+        <div class="field"><label for="sWrap">"5 minutes left" on long tasks</label><select id="sWrap"><option value="1">On</option><option value="0">Off</option></select></div>
+        <div class="field"><label for="sRecap">Sunday evening recap</label><select id="sRecap"><option value="1">On</option><option value="0">Off</option></select></div>
+        <div class="field"><label for="sQuietStart">Quiet from</label><input type="time" id="sQuietStart"></div>
+        <div class="field"><label for="sQuietEnd">Quiet until</label><input type="time" id="sQuietEnd"></div>
+        <p class="note">Urgent tasks still come through in quiet hours.</p>
+        <p class="note" id="waNote"></p>
+        <div class="btnrow"><button class="btn" id="testWa" type="button" hidden>Send a test WhatsApp</button></div>
+
+        <h4>Repeats</h4>
+        <ul class="list" id="routineList"></ul>
+
+        <div id="accountBox" hidden>
+          <h4>Sign-in</h4>
+          <p class="note">Passkeys let you sign in with Face ID, Touch ID or your fingerprint.</p>
+          <ul class="list" id="passkeyList"></ul>
+          <div class="btnrow">
+            <button class="btn" id="addPasskey" type="button" hidden>Add a passkey on this device</button>
+            <button class="btn ghost" id="logoutBtn" type="button">Sign out</button>
+          </div>
+        </div>
+      </div>
+    </details>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"><span id="toastText"></span><button class="toastbtn" id="toastBtn" type="button" hidden></button></div>
+
+<script src="shared.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

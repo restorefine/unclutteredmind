@@ -1,0 +1,10 @@
+# Caddy gets and renews the HTTPS certificate automatically.
+{$DOMAIN} {
+	encode gzip
+	reverse_proxy app:3000
+}
+
+# Send the bare domain (no www) to the main address.
+unclutteredmind.co.uk {
+	redir https://{$DOMAIN}{uri} permanent
+}

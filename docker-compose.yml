@@ -1,0 +1,33 @@
+# Production setup for a server that ALREADY runs a web server (Caddy / Nginx) on ports 80 and 443.
+# This runs only the app, on a private port (127.0.0.1:3100). Point the existing web server at it:
+#   Caddy on the host:      www.unclutteredmind.co.uk { reverse_proxy 127.0.0.1:3100 }
+#   Caddy in Docker:        docker network connect unclutteredmind <caddy container>
+#                           www.unclutteredmind.co.uk { reverse_proxy unclutteredmind:3000 }
+# Fresh server with nothing on 80/443? Use docker-compose.standalone.yml instead (brings its own Caddy).
+#
+#   1. cp .env.example .env   and fill it in
+#   2. docker compose up -d --build
+services:
+  app:
+    build: .
+    container_name: unclutteredmind
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+      DATA_DIR: /data
+      TRUST_PROXY: "1"
+    volumes:
+      - um-data:/data
+    ports:
+      - "127.0.0.1:3100:3000"
+    networks:
+      - unclutteredmind
+
+networks:
+  unclutteredmind:
+    name: unclutteredmind
+
+volumes:
+  um-data:

@@ -1,0 +1,14 @@
+{
+  "name": "unclutteredmind",
+  "version": "2.0.0",
+  "description": "Say or type everything in your head, get a calm planned day, get nudged on WhatsApp. Built for ADHD brains.",
+  "main": "server.js",
+  "private": true,
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test test/*.test.js"
+  },
+  "engines": {
+    "node": ">=22.13"
+  }
+}

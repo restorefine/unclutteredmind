@@ -1,0 +1,715 @@
+<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"></head><body><title>Uncluttered Mind Handover</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: sticky contents rail on the left, one reading column on the right; rail folds into a menu on phones. */
+:root {
+  --bg: #EEF2F4;
+  --surface: #FFFFFF;
+  --ink: #12222B;
+  --muted: #586B75;
+  --line: #D5DEE3;
+  --accent: #0E6E6A;
+  --accent-ink: #FFFFFF;
+  --hi: #FFE45C;
+  --hi-ink: #12222B;
+  --warn: #B4440F;
+  --ok: #187A43;
+  --soft: #E2ECEC;
+  --code-bg: #12222B;
+  --code-ink: #E6EEF1;
+  --mark: #FFE45C;
+  --display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --body: "Atkinson Hyperlegible", Verdana, system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E171C; --surface: #16232A; --ink: #E6EEF1; --muted: #93A7B1; --line: #26363F;
+    --accent: #4FC2B9; --accent-ink: #062321; --hi: #E9CB3B; --hi-ink: #12222B;
+    --warn: #F59A5E; --ok: #5FD38E; --soft: #1C2F33; --code-bg: #081014; --code-ink: #DCE7EB; --mark: rgba(79, 194, 185, .38); color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --mark: rgba(79, 194, 185, .38);
+  --bg: #0E171C; --surface: #16232A; --ink: #E6EEF1; --muted: #93A7B1; --line: #26363F;
+  --accent: #4FC2B9; --accent-ink: #062321; --hi: #E9CB3B; --hi-ink: #12222B;
+  --warn: #F59A5E; --ok: #5FD38E; --soft: #1C2F33; --code-bg: #081014; --code-ink: #DCE7EB; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 20px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.6; margin: 0; padding-inline: 16px; padding-block: 28px 80px; }
+.page { max-width: 1120px; margin: 0 auto; display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 48px; align-items: start; }
+@media (max-width: 900px) { .page { grid-template-columns: minmax(0, 1fr); gap: 24px; } }
+
+/* contents rail */
+.rail { position: sticky; top: 20px; display: grid; gap: 14px; font-size: 15px; max-height: calc(100vh - 40px); overflow-y: auto; padding-right: 4px; }
+.rail .brand { display: flex; align-items: center; gap: 8px; font-family: var(--display); font-weight: 600; font-size: 16px; }
+.brand svg { width: 26px; height: 26px; color: var(--accent); flex: none; }
+.rail nav { display: grid; gap: 2px; }
+.rail .group { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 700; margin: 12px 0 4px; }
+.rail a { color: var(--ink); text-decoration: none; padding: 5px 10px; border-radius: 8px; border-left: 3px solid transparent; }
+.rail a:hover { background: var(--soft); }
+.rail a.active { border-left-color: var(--accent); background: var(--soft); font-weight: 700; }
+.mobilenav { display: none; }
+@media (max-width: 900px) {
+  .rail { display: none; }
+  .mobilenav { display: block; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 4px 14px; }
+  .mobilenav summary { cursor: pointer; font-weight: 700; padding: 10px 0; }
+  .mobilenav nav { display: grid; gap: 2px; padding-bottom: 10px; }
+  .mobilenav a { color: var(--ink); text-decoration: none; padding: 6px 0; border-bottom: 1px solid var(--line); }
+  .mobilenav .group { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 700; margin-top: 10px; }
+}
+
+/* type */
+main { min-width: 0; display: grid; gap: 56px; }
+section { display: grid; gap: 16px; min-width: 0; }
+h1, h2, h3 { font-family: var(--display); line-height: 1.15; margin: 0; text-wrap: balance; }
+h1 { font-weight: 800; font-size: clamp(36px, 7vw, 56px); letter-spacing: -.02em; }
+h1 mark, h2 mark { background: linear-gradient(transparent 55%, var(--mark) 55%, var(--mark) 92%, transparent 92%); color: inherit; padding: 0 .06em; }
+h2 { font-weight: 800; font-size: clamp(26px, 4.5vw, 34px); letter-spacing: -.01em; }
+h3 { font-weight: 600; font-size: 21px; }
+p { margin: 0; max-width: 68ch; }
+.lead { font-size: 20px; max-width: 62ch; }
+.eyebrow { font-size: 13px; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+.muted { color: var(--muted); }
+a { color: var(--accent); text-underline-offset: 3px; }
+code { font-family: var(--mono); font-size: .86em; background: var(--soft); padding: 1px 6px; border-radius: 6px; overflow-wrap: anywhere; }
+ul, ol { margin: 0; padding-left: 1.3em; display: grid; gap: 6px; max-width: 70ch; }
+strong { font-weight: 700; }
+.part { display: grid; gap: 10px; padding-top: 8px; border-top: 3px solid var(--ink); }
+.part .num { font-family: var(--mono); font-size: 14px; color: var(--muted); }
+
+/* header */
+.hero { display: grid; gap: 18px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font-size: 14px; padding: 4px 12px; border-radius: 99px; background: var(--surface); border: 1px solid var(--line); }
+.chip b { font-family: var(--mono); font-weight: 500; }
+.audience { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.audience div { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; display: grid; gap: 4px; align-content: start; }
+.audience strong { font-family: var(--display); font-weight: 600; font-size: 18px; }
+
+/* flow */
+.flow { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; max-width: none; counter-reset: s; }
+.flow li { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: grid; gap: 4px; align-content: start; counter-increment: s; }
+.flow li::before { content: counter(s); font-family: var(--mono); font-size: 13px; width: 26px; height: 26px; display: grid; place-items: center; border-radius: 50%; background: var(--accent); color: var(--accent-ink); }
+.flow li:not(:last-child)::after { content: ""; position: absolute; right: -10px; top: 26px; width: 10px; height: 2px; background: var(--accent); }
+.flow strong { font-family: var(--display); font-weight: 600; font-size: 17px; line-height: 1.2; }
+.flow span { font-size: 14px; color: var(--muted); line-height: 1.45; }
+@media (max-width: 760px) {
+  .flow { grid-template-columns: minmax(0, 1fr); }
+  .flow li:not(:last-child)::after { right: auto; left: 26px; top: auto; bottom: -10px; width: 2px; height: 10px; }
+}
+
+/* features */
+.features { display: grid; gap: 14px; }
+.feature { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px; display: grid; gap: 12px; }
+.feature header { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.feature h3 { font-size: 20px; }
+.why { font-size: 13px; padding: 2px 10px; border-radius: 99px; background: var(--soft); color: var(--muted); font-weight: 700; white-space: nowrap; }
+.twocol { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; }
+.twocol > div { display: grid; gap: 6px; align-content: start; min-width: 0; }
+.twocol h4 { margin: 0; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.twocol p, .twocol li { font-size: 16px; }
+@media (max-width: 640px) { .twocol { grid-template-columns: minmax(0, 1fr); } }
+
+/* nudge rail */
+.rail2 { list-style: none; margin: 0; padding: 0 0 0 4px; display: grid; gap: 0; max-width: 60ch; }
+.rail2 li { display: grid; grid-template-columns: 74px 18px minmax(0, 1fr); gap: 12px; align-items: start; position: relative; padding-bottom: 14px; }
+.rail2 li::before { content: ""; position: absolute; left: 82px; top: 14px; bottom: -2px; width: 2px; background: var(--line); }
+.rail2 li:last-child::before { display: none; }
+.rail2 .t { font-family: var(--mono); font-size: 15px; font-variant-numeric: tabular-nums; padding-top: 1px; }
+.rail2 .dot { width: 18px; height: 18px; border-radius: 50%; border: 3px solid var(--accent); background: var(--surface); margin-top: 4px; position: relative; z-index: 1; }
+.rail2 .dot.btns { background: var(--accent); }
+.rail2 strong { display: block; }
+.rail2 span { font-size: 15px; color: var(--muted); }
+
+/* tables */
+.tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 15px; }
+th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); background: var(--soft); white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+td:first-child { white-space: nowrap; }
+td.wrap { white-space: normal; }
+.req { font-size: 12px; font-weight: 700; padding: 1px 8px; border-radius: 99px; white-space: nowrap; }
+.req.yes { background: color-mix(in srgb, var(--warn) 15%, transparent); color: var(--warn); }
+.req.opt { background: var(--soft); color: var(--muted); }
+
+/* callouts + steps */
+.callout { border-radius: 14px; padding: 14px 18px; background: var(--surface); border: 1px solid var(--line); display: grid; gap: 6px; max-width: 76ch; }
+.callout.warn { border-color: color-mix(in srgb, var(--warn) 45%, var(--line)); background: color-mix(in srgb, var(--warn) 7%, var(--surface)); }
+.callout.tip { border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); background: color-mix(in srgb, var(--accent) 7%, var(--surface)); }
+.callout strong:first-child { font-family: var(--display); font-weight: 600; }
+.rules { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+.rules div { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; display: grid; gap: 4px; align-content: start; }
+.rules b { font-family: var(--display); font-weight: 600; font-size: 18px; }
+.rules span { font-size: 15px; color: var(--muted); }
+ol.steps { list-style: none; padding: 0; counter-reset: st; gap: 12px; max-width: 76ch; }
+ol.steps > li { counter-increment: st; display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 12px; }
+ol.steps > li::before { content: counter(st); font-family: var(--mono); font-size: 14px; width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--accent); color: var(--accent); display: grid; place-items: center; }
+ol.steps > li > div { display: grid; gap: 6px; min-width: 0; padding-top: 3px; }
+.option { display: grid; gap: 14px; }
+.option h3 { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.badge { font-family: var(--body); font-size: 12px; font-weight: 700; padding: 2px 10px; border-radius: 99px; background: var(--hi); color: var(--hi-ink); }
+
+/* code */
+.code { position: relative; background: var(--code-bg); color: var(--code-ink); border-radius: 12px; min-width: 0; }
+.code pre { margin: 0; padding: 14px 16px; overflow-x: auto; font-family: var(--mono); font-size: 14px; line-height: 1.55; }
+.code button { position: absolute; top: 8px; right: 8px; font: inherit; font-size: 13px; font-weight: 700; padding: 4px 10px; border-radius: 8px; border: 1px solid color-mix(in srgb, var(--code-ink) 30%, transparent); background: transparent; color: var(--code-ink); cursor: pointer; }
+.code button:focus-visible, a:focus-visible, summary:focus-visible, input:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.code pre code { background: none; padding: 0; font-size: inherit; color: inherit; }
+
+/* checklist */
+.checklist { list-style: none; padding: 0; display: grid; gap: 8px; max-width: 76ch; }
+.checklist label { display: flex; gap: 12px; align-items: flex-start; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; cursor: pointer; }
+.checklist input { width: 20px; height: 20px; margin-top: 3px; accent-color: var(--accent); flex: none; }
+.checklist input:checked + span { color: var(--muted); text-decoration: line-through; }
+.progress { font-size: 15px; color: var(--muted); }
+.progress b { font-family: var(--mono); font-weight: 500; color: var(--ink); }
+
+footer { border-top: 1px solid var(--line); padding-top: 18px; font-size: 14px; color: var(--muted); display: grid; gap: 4px; }
+</style>
+
+<div class="page">
+  <aside class="rail" aria-label="Contents">
+    <div class="brand">
+      <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M4 9c3-3 5 3 8 0s5 3 8 0"/><path d="M4 16c3-2 5 2 8 0"/><path d="M4 23h24"/><circle cx="25" cy="10" r="3" fill="currentColor" stroke="none"/></svg>
+      <span>Uncluttered Mind</span>
+    </div>
+    <nav id="toc">
+      <div class="group">The product</div>
+      <a href="#brief">The brief</a>
+      <a href="#flow">How a day works</a>
+      <a href="#features">Features</a>
+      <a href="#whatsapp-use">Using WhatsApp</a>
+      <a href="#language">What it understands</a>
+      <a href="#settings">Settings</a>
+      <div class="group">Hosting</div>
+      <a href="#architecture">What you're deploying</a>
+      <a href="#config">Configuration</a>
+      <a href="#hosting">Hosting steps</a>
+      <a href="#whatsapp-setup">WhatsApp setup</a>
+      <a href="#ai">AI keys</a>
+      <a href="#golive">Go-live checklist</a>
+      <a href="#running">Running it</a>
+      <a href="#trouble">Troubleshooting</a>
+      <a href="#api">API reference</a>
+      <a href="#limits">Limits and next steps</a>
+    </nav>
+  </aside>
+
+  <main>
+    <header class="hero" id="top">
+      <div class="eyebrow">Developer handover · October 2026</div>
+      <h1>Uncluttered Mind: <mark>handover</mark></h1>
+      <p class="lead">A day planner for ADHD brains. You say or type everything that's on your mind, and it turns that into a calm, planned day. It then shows you one thing at a time and nudges you on WhatsApp from the business number.</p>
+      <div class="chips">
+        <span class="chip">Version <b>2.0</b></span>
+        <span class="chip">Node <b>20+</b></span>
+        <span class="chip"><b>0</b> npm dependencies</span>
+        <span class="chip"><b>36</b> automated tests</span>
+        <span class="chip">Single user</span>
+        <span class="chip">WhatsApp Cloud API</span>
+      </div>
+      <div class="audience">
+        <div><strong>Rohit</strong><span class="muted">Start with <a href="#brief">the brief</a> and <a href="#features">features</a>. They explain what the app does and why each part helps.</span></div>
+        <div><strong>Developer</strong><span class="muted">Read the product part once for context, then work through <a href="#architecture">Hosting</a>. Allow 1–2 hours, mostly waiting on Meta.</span></div>
+      </div>
+      <details class="mobilenav">
+        <summary>Contents</summary>
+        <nav>
+          <span class="group">The product</span>
+          <a href="#brief">The brief</a><a href="#flow">How a day works</a><a href="#features">Features</a><a href="#whatsapp-use">Using WhatsApp</a><a href="#language">What it understands</a><a href="#settings">Settings</a>
+          <span class="group">Hosting</span>
+          <a href="#architecture">What you're deploying</a><a href="#config">Configuration</a><a href="#hosting">Hosting steps</a><a href="#whatsapp-setup">WhatsApp setup</a><a href="#ai">AI keys</a><a href="#golive">Go-live checklist</a><a href="#running">Running it</a><a href="#trouble">Troubleshooting</a><a href="#api">API reference</a><a href="#limits">Limits and next steps</a>
+        </nav>
+      </details>
+    </header>
+
+    <!-- ============================================================ PART 1 -->
+    <div class="part"><span class="num">Part 1</span><h2>The product</h2></div>
+
+    <section id="brief">
+      <h2>The brief</h2>
+      <p><strong>The problem.</strong> With ADHD, the hard part usually isn't knowing what to do. It's holding it all in your head, starting, judging how long things take, and switching between tasks. Ordinary to-do apps make things worse: long lists, lots of fields to fill in, and red overdue badges that pile up.</p>
+      <p><strong>What Uncluttered Mind does instead.</strong> You get everything out of your head in one go, by voice or typing, in the app or on WhatsApp. The app works out what each task is, when it should happen and how long it will take. It lays the tasks into your free time with a breather between each one. Then it hides the list and shows only what matters right now, with a bar that makes time visible. WhatsApp gives a nudge before, at the start and at the end of each task, with buttons to tap so you never have to open the app.</p>
+      <p><strong>The design rules behind every feature:</strong></p>
+      <ul>
+        <li><strong>One thing at a time.</strong> The focus card shows only the current or next task.</li>
+        <li><strong>Getting things in must be effortless.</strong> No forms, no fields. Just talk.</li>
+        <li><strong>Make starting easy.</strong> "Start it now", tiny first steps, "just do the first 2 minutes".</li>
+        <li><strong>Make time visible.</strong> Time bars, heads-ups and "5 minutes left" warnings.</li>
+        <li><strong>No guilt.</strong> "Not today" is always one tap away. Missed tasks get a gentle check, not a red badge. Everything can be undone.</li>
+        <li><strong>It adapts to the day you're having.</strong> Energy check-ins and a "Too much?" button.</li>
+      </ul>
+    </section>
+
+    <section id="flow">
+      <h2>How a day works</h2>
+      <ol class="flow">
+        <li><strong>Brain dump</strong><span>Talk or type in the app, or text or voice-note the business number.</span></li>
+        <li><strong>Understand</strong><span>AI (or the built-in rules) splits it into tasks with times, lengths and repeats.</span></li>
+        <li><strong>Check</strong><span>A preview shows what it heard. Fix a title or remove a line, then tap "Add".</span></li>
+        <li><strong>Plan</strong><span>Set times stay put. Everything else goes into free time with breathers.</span></li>
+        <li><strong>Do</strong><span>The focus card and WhatsApp nudges guide each task. Tap Done, +15 min or Tomorrow.</span></li>
+      </ol>
+      <p class="muted">Every morning at 8:00 a WhatsApp message lists the day and asks about your energy. On Sunday evening there's a short recap of what got done.</p>
+    </section>
+
+    <section id="features">
+      <h2>Features</h2>
+      <p>Each feature shows what you see, followed by how it works so you both know what to expect.</p>
+      <div class="features">
+
+        <article class="feature">
+          <header><h3>Brain dump: voice, typing or WhatsApp</h3><span class="why">Capture friction</span></header>
+          <div class="twocol">
+            <div><h4>What you see</h4><p>A big "What's on your mind?" box with a mic button. Say everything in one go, e.g. <em>"call the bank at 2, gym after work, buy milk and eggs, finish the report by 5, urgent"</em>. A preview lists the tasks it found, each with an editable title and a time label, then "Add to my day".</p></div>
+            <div><h4>How it works</h4><ul><li>With an AI key, the server asks the AI to read the dump. If that fails, it falls back to the built-in parser automatically.</li><li>The mic uses the browser's speech recognition (Chrome, Edge, Safari). Elsewhere it records audio and the server transcribes it (needs <code>OPENAI_API_KEY</code>).</li><li>A text or voice note sent to the business number goes through the same process, then the bot replies with what it added.</li></ul></div>
+          </div>
+        </article>
+
+        <article class="feature">
+          <header><h3>Automatic planning with breathers</h3><span class="why">Overwhelm, transitions</span></header>
+          <div class="twocol">
+            <div><h4>What you see</h4><p>The tasks appear on a timeline for the day, with a gap between each one, and long gaps are labelled "1 hr free". A bar shows how full the day is and warns "That's a lot for one day" at 80%. Anything that won't fit goes into "No room for these", with Fit in today, Tomorrow and Someday buttons.</p></div>
+            <div><h4>How it works</h4><ul><li>Tasks with a set time ("at 2") stay exactly where they are.</li><li>Flexible tasks go into the first free slot, within any window that was said ("by 5", "after work"). Urgent tasks are placed first.</li><li>The day runs 8am–10pm with a 10-minute breather by default; both can be changed in Settings.</li><li>Lengths are estimated when not said: calls and emails 15 min, meds 5, gym and meetings 1 hour, anything else 30.</li></ul></div>
+          </div>
+        </article>
+
+        <article class="feature">
+          <header><h3>The focus card</h3><span class="why">One thing at a time</span></header>
+          <div class="twocol">
+            <div><h4>What you see</h4><p>One big card at the top showing <strong>Right now</strong> (minutes left and a time bar) or <strong>Up next</strong> (with a "Start it now" button). If a task ended without being ticked, the card asks "Did you finish it?" with Yes, Do it next and Tomorrow. Its buttons are Done, +15 min, Not today and, with AI, I'm stuck.</p></div>
+            <div><h4>How it works</h4><ul><li>"Start it now" moves the next task to the current time.</li><li>+15 min pushes the task back, and rolls it to tomorrow if there's no room left today.</li><li>The missed-task check covers tasks that ended in the last 3 hours.</li><li>Ticking a task off shows a short message and an Undo button for 6 seconds.</li></ul></div>
+          </div>
+        </article>
+
+        <article class="feature">
+          <header><h3>Small steps ("I'm stuck")</h3><span class="why">Getting started</span></header>
+          <div class="twocol">
+            <div><h4>What you see</h4><p>Tap "I'm stuck" or "Break it into small steps" and a vague task like "Sort my taxes" becomes 3–6 tiny steps. The first step always takes under 2 minutes, e.g. "Open the laptop and find last year's P60". The focus card shows "Step 1 of 4" with a Step done button. You can also add steps yourself.</p></div>
+            <div><h4>How it works</h4><ul><li>The AI is asked for concrete, physical steps. The first one must be tiny.</li><li>Ticking the last step completes the task automatically.</li><li>The WhatsApp start message includes the first unfinished step.</li><li>Texting <code>STUCK</code> breaks down the current task on WhatsApp.</li></ul></div>
+          </div>
+        </article>
+
+        <article class="feature" id="nudges">
+          <header><h3>WhatsApp nudges</h3><span class="why">Time blindness, out of sight</span></header>
+          <p>For a 1-hour task at 2:00pm, with the default settings:</p>
+          <ol class="rail2">
+            <li><span class="t">1:50pm</span><span class="dot"></span><div><strong>Heads-up</strong><span>"Heads up: Essay in 10 min. Finish what you're doing and grab some water."</span></div></li>
+            <li><span class="t">2:00pm</span><span class="dot btns"></span><div><strong>Start, with buttons</strong><span>Shows the first step (or "Just do the first 2 minutes") with buttons: Done · +15 min · Tomorrow.</span></div></li>
+            <li><span class="t">2:05pm</span><span class="dot btns"></span><div><strong>Gentle second nudge</strong><span>Only if there's been no reply: "Still with me? Even 2 minutes counts."</span></div></li>
+            <li><span class="t">2:55pm</span><span class="dot"></span><div><strong>5 minutes left</strong><span>Only on tasks of 45 min or longer. It names what's next.</span></div></li>
+            <li><span class="t">3:00pm</span><span class="dot btns"></span><div><strong>Check-in</strong><span>"Did you finish Essay?" with the same three buttons.</span></div></li>
+          </ol>
+          <div class="twocol">
+            <div><h4>Also sent</h4><ul><li><strong>Morning plan</strong> at 8:00, asking "How's your energy today?" with Low · OK · High buttons.</li><li><strong>Sunday recap</strong> at 7pm: how many things got done, with no streaks or scores.</li><li><strong>Quiet hours</strong>, 10:30pm–7am by default: no messages except for urgent tasks.</li></ul></div>
+            <div><h4>The 24-hour rule</h4><p>WhatsApp only lets a business send normal messages and buttons within 24 hours of the person's last message to it. After that, only pre-approved templates are delivered. The app handles this automatically. Texting the bot once a day (e.g. <code>TODAY</code>) keeps the buttons working.</p></div>
+          </div>
+        </article>
+
+        <article class="feature">
+          <header><h3>"Too much? Keep my top 3"</h3><span class="why">Overwhelm</span></header>
+          <div class="twocol">
+            <div><h4>What you see</h4><p>A button under the day bar whenever more than 3 flexible tasks are left. Tap it and the day shrinks right away, with a "Breathe" message and an Undo button. On WhatsApp, text <code>TOO MUCH</code> (or "overwhelmed", "help me").</p></div>
+            <div><h4>How it works</h4><p>It keeps everything with a set time, the task in progress, and the top 3 flexible tasks (urgent first, then earliest). Everything else moves to tomorrow and gets a new slot there. Undo moves them back.</p></div>
+          </div>
+        </article>
+
+        <article class="feature">
+          <header><h3>Energy check-in</h3><span class="why">Bad days, good days</span></header>
+          <div class="twocol">
+            <div><h4>What you see</h4><p>"How's your energy today?" appears in the app (when the day has tasks) and in the morning WhatsApp message. Tap Low, OK or High.</p></div>
+            <div><h4>How it works</h4><ul><li><strong>Low:</strong> keeps the 3 easiest tasks and moves the rest to tomorrow (Undo available).</li><li><strong>High:</strong> re-orders the day so the most demanding task comes first.</li><li><strong>OK:</strong> no change.</li><li>Tasks are marked easy or demanding automatically ("essay", "report" and "taxes" count as demanding).</li></ul></div>
+          </div>
+        </article>
+
+        <article class="feature">
+          <header><h3>Repeats and the someday list</h3><span class="why">Routines, ideas with no date</span></header>
+          <div class="twocol">
+            <div><h4>What you see</h4><p>Say <em>"meds every morning at 8"</em>, <em>"bins every Tuesday night"</em> or <em>"gym on Mondays and Thursdays at 6"</em> and they repeat automatically. Settings → Repeats lists them, each with a Stop repeating button. Say <em>"learn Spanish someday"</em> and it goes on the Someday list, with a Do today button, instead of cluttering today.</p></div>
+            <div><h4>How it works</h4><ul><li>Repeat copies are created for today and the next 7 days, and topped up daily.</li><li>If today's time has already passed, today's copy is skipped.</li><li>Deleting one copy doesn't bring it back; Stop repeating removes future copies.</li></ul></div>
+          </div>
+        </article>
+
+        <article class="feature">
+          <header><h3>Works without the server, too</h3><span class="why">Resilience</span></header>
+          <div class="twocol">
+            <div><h4>What you see</h4><p>If the page is opened without the server (for example as a preview), it shows "This device only" with an example day, and everything except WhatsApp, voice notes and AI still works.</p></div>
+            <div><h4>How it works</h4><p>The parser and planner live in one shared file (<code>public/shared.js</code>) that runs in both the browser and the server. That means behaviour is identical in both, and in this mode the browser keeps the data in its own storage.</p></div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <section id="whatsapp-use">
+      <h2>Using WhatsApp</h2>
+      <p>Tap the buttons on any reminder, or send these. Only the number in <code>WA_TO</code> is listened to.</p>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Send</th><th>What happens</th></tr></thead>
+        <tbody>
+          <tr><td>Any text or voice note</td><td class="wrap">Becomes tasks, e.g. "buy milk, ring the GP at 9 tomorrow". The bot replies with what it added and when.</td></tr>
+          <tr><td><code>DONE</code></td><td class="wrap">Ticks off the current task and says what's next. Also "did it", "finished", "yes".</td></tr>
+          <tr><td><code>SNOOZE</code></td><td class="wrap">Pushes the current task back 15 minutes. Also "later", "not yet".</td></tr>
+          <tr><td><code>SKIP</code></td><td class="wrap">Moves the current task to tomorrow. Also "tomorrow", "not today".</td></tr>
+          <tr><td><code>TODAY</code></td><td class="wrap">Sends today's plan.</td></tr>
+          <tr><td><code>STUCK</code></td><td class="wrap">Breaks the current task into tiny steps (needs AI).</td></tr>
+          <tr><td><code>TOO MUCH</code></td><td class="wrap">Keeps 3 things and moves the rest to tomorrow. Also "overwhelmed", "help me".</td></tr>
+          <tr><td><code>LOW</code> / <code>OK</code> / <code>HIGH</code></td><td class="wrap">Sets today's energy and re-shapes the day.</td></tr>
+          <tr><td><code>HELP</code></td><td class="wrap">Lists the commands.</td></tr>
+          <tr><td>"thanks", "cool", "ok"</td><td class="wrap">Never become tasks. You get a thumbs-up, or "ok" answers the energy question if it's still open.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="language">
+      <h2>What it understands</h2>
+      <p>The built-in parser handles these on its own, and with an AI key it copes with far messier speech.</p>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Say</th><th>Becomes</th></tr></thead>
+        <tbody>
+          <tr><td>"at 3", "half 4", "quarter past 2", "14:30"</td><td class="wrap">That exact time. "At 3" means 3pm.</td></tr>
+          <tr><td>"meeting 2 to 3:30pm"</td><td class="wrap">2pm, 90 minutes</td></tr>
+          <tr><td>"by 5", "after 6"</td><td class="wrap">Fitted in before 5pm / after 6pm</td></tr>
+          <tr><td>"this morning", "lunch", "afternoon"</td><td class="wrap">9am–12pm, 12–2pm, 12–5pm</td></tr>
+          <tr><td>"after work", "tonight", "before bed"</td><td class="wrap">5:30–9:30pm, or 8pm until the end of the day</td></tr>
+          <tr><td>"tomorrow", "on Friday"</td><td class="wrap">That day</td></tr>
+          <tr><td>"for 20 minutes", "for an hour", "for 2 hours"</td><td class="wrap">That length</td></tr>
+          <tr><td>"every day", "every weekday", "every Tuesday", "on Mondays"</td><td class="wrap">A repeat</td></tr>
+          <tr><td>"someday", "at some point", "no rush"</td><td class="wrap">The someday list</td></tr>
+          <tr><td>"urgent", "asap", "important"</td><td class="wrap">Placed first and tagged urgent</td></tr>
+          <tr><td>"buy milk, eggs and bread"</td><td class="wrap">Kept together as one shopping task</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="settings">
+      <h2>Settings</h2>
+      <p>All under "Settings, repeats and WhatsApp" at the bottom of the app.</p>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Setting</th><th>Default</th><th>Effect</th></tr></thead>
+        <tbody>
+          <tr><td>My day starts / ends</td><td>8:00am / 10:00pm</td><td class="wrap">Flexible tasks are only placed within this window</td></tr>
+          <tr><td>Breather between tasks</td><td>10 min</td><td class="wrap">Gap kept around every task</td></tr>
+          <tr><td>If I don't say how long</td><td>30 min</td><td class="wrap">Length used when none is said and none can be guessed</td></tr>
+          <tr><td>Heads-up before a task</td><td>10 min</td><td class="wrap">WhatsApp warning before the start (Off available)</td></tr>
+          <tr><td>Morning plan at</td><td>8:00am</td><td class="wrap">Daily WhatsApp plan</td></tr>
+          <tr><td>Ask about my energy</td><td>On</td><td class="wrap">Energy question in the app and the morning message</td></tr>
+          <tr><td>Nudge again if I don't reply</td><td>On</td><td class="wrap">Second nudge 5 minutes after the start</td></tr>
+          <tr><td>"5 minutes left" on long tasks</td><td>On</td><td class="wrap">For tasks of 45 minutes or longer</td></tr>
+          <tr><td>Sunday evening recap</td><td>On</td><td class="wrap">7pm Sunday summary</td></tr>
+          <tr><td>Quiet from / until</td><td>10:30pm / 7:00am</td><td class="wrap">No messages except for urgent tasks</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- ============================================================ PART 2 -->
+    <div class="part"><span class="num">Part 2</span><h2>Hosting</h2></div>
+
+    <section id="architecture">
+      <h2>What you're deploying</h2>
+      <p>One Node.js process with <strong>no npm dependencies</strong>. It serves the app, runs a login-protected JSON API (password or Face ID / Touch ID passkey), receives WhatsApp events on <code>/webhook</code>, checks for due reminders every 30 seconds, and stores everything in a SQLite database built into Node (transactional writes, 14 daily backups).</p>
+      <div class="tablewrap"><table>
+        <thead><tr><th>File</th><th>Job</th></tr></thead>
+        <tbody>
+          <tr><td><code>server.js</code></td><td class="wrap">HTTP server, login and passkeys, API, WhatsApp webhook, reminder loop, static files, security headers</td></tr>
+          <tr><td><code>lib/whatsapp.js</code></td><td class="wrap">Buttons inside the 24h window, templates outside it, voice-note download</td></tr>
+          <tr><td><code>lib/ai.js</code></td><td class="wrap">Optional AI: brain-dump understanding, step breakdown, transcription</td></tr>
+          <tr><td><code>lib/reminders.js</code></td><td class="wrap">Pure function deciding which reminders are due (fully unit-tested)</td></tr>
+          <tr><td><code>public/shared.js</code></td><td class="wrap">Parser, planner and every state operation, shared by server and browser</td></tr>
+          <tr><td><code>public/</code></td><td class="wrap">The app: <code>index.html</code>, <code>app.js</code>, <code>app.css</code>, manifest, icon</td></tr>
+          <tr><td><code>test/</code></td><td class="wrap">36 tests, including a full server run against fake WhatsApp and AI. Run with <code>npm test</code>.</td></tr>
+          <tr><td><code>Dockerfile</code>, <code>docker-compose.yml</code>, <code>Caddyfile</code></td><td class="wrap">Production hosting with automatic HTTPS</td></tr>
+          <tr><td><code>DEPLOY.md</code>, <code>.env.example</code></td><td class="wrap">This guide in Markdown, and every setting with comments</td></tr>
+        </tbody>
+      </table></div>
+      <div class="rules">
+        <div><b>One instance only</b><span>File storage plus an in-process timer. Two replicas would double-send reminders and overwrite data. No autoscaling.</span></div>
+        <div><b>Persistent disk</b><span>Mount it at <code>/data</code> and set <code>DATA_DIR</code>. Without it, every deploy wipes the data.</span></div>
+        <div><b>Always on</b><span>Free tiers that sleep when idle will miss reminders.</span></div>
+        <div><b>HTTPS</b><span>The microphone, secure cookies and Meta's webhook all need it.</span></div>
+      </div>
+    </section>
+
+    <section id="config">
+      <h2>Configuration</h2>
+      <p>Everything is an environment variable, or a <code>.env</code> file next to <code>server.js</code>. <code>.env.example</code> lists them all with comments.</p>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Variable</th><th>Needed</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td><code>APP_USERNAME</code></td><td><span class="req yes">Before going online</span></td><td class="wrap">The one account that can sign in.</td></tr>
+          <tr><td><code>APP_PASSWORD</code></td><td><span class="req yes">Before going online</span></td><td class="wrap">Its password (12+ characters). 5 wrong tries lock logins for 15 min. The app won't start in production without these two.</td></tr>
+          <tr><td><code>APP_ORIGIN</code></td><td><span class="req opt">Recommended</span></td><td class="wrap">Exact address, e.g. <code>https://app.example.com</code>. Face ID / Touch ID passkeys are tied to it.</td></tr>
+          <tr><td><code>DATA_DIR</code></td><td><span class="req yes">Production</span></td><td class="wrap">Folder on the persistent disk. Docker default <code>/data</code>.</td></tr>
+          <tr><td><code>TZ</code></td><td><span class="req opt">Recommended</span></td><td class="wrap">Timezone for planning and reminders. Default <code>Europe/London</code>.</td></tr>
+          <tr><td><code>TRUST_PROXY</code></td><td><span class="req yes">Behind a proxy</span></td><td class="wrap"><code>1</code> behind Caddy, Nginx, Render or Railway, so HTTPS cookies and IP limits work</td></tr>
+          <tr><td><code>PORT</code></td><td><span class="req opt">No</span></td><td class="wrap">Default <code>3000</code></td></tr>
+          <tr><td><code>SESSION_SECRET</code></td><td><span class="req opt">No</span></td><td class="wrap">Signs login cookies. Auto-generated if empty. Changing <code>APP_USERNAME</code> or <code>APP_PASSWORD</code> signs everyone out.</td></tr>
+          <tr><td><code>WA_TOKEN</code></td><td><span class="req yes">WhatsApp</span></td><td class="wrap">Permanent System User access token</td></tr>
+          <tr><td><code>WA_PHONE_NUMBER_ID</code></td><td><span class="req yes">WhatsApp</span></td><td class="wrap">Phone number ID of the business number (not the number itself)</td></tr>
+          <tr><td><code>WA_TO</code></td><td><span class="req yes">WhatsApp</span></td><td class="wrap">Rohit's personal number, e.g. <code>447700900123</code>. Only this number can command the bot.</td></tr>
+          <tr><td><code>WA_VERIFY_TOKEN</code></td><td><span class="req yes">WhatsApp</span></td><td class="wrap">Any random string; must match Meta's webhook settings</td></tr>
+          <tr><td><code>WA_APP_SECRET</code></td><td><span class="req yes">Production</span></td><td class="wrap">Meta app secret; verifies webhook signatures so fake messages are rejected</td></tr>
+          <tr><td><code>WA_TEMPLATE_NAME</code></td><td><span class="req yes">WhatsApp</span></td><td class="wrap">Approved plain template (see WhatsApp setup)</td></tr>
+          <tr><td><code>WA_TEMPLATE_BUTTONS_NAME</code></td><td><span class="req opt">Optional</span></td><td class="wrap">Approved template with 3 quick-reply buttons</td></tr>
+          <tr><td><code>WA_TEMPLATE_LANG</code></td><td><span class="req opt">No</span></td><td class="wrap">Default <code>en_GB</code>; must match the templates</td></tr>
+          <tr><td><code>WA_API_VERSION</code></td><td><span class="req opt">No</span></td><td class="wrap">Default <code>v21.0</code></td></tr>
+          <tr><td><code>ANTHROPIC_API_KEY</code></td><td><span class="req opt">Optional</span></td><td class="wrap">AI brain-dump understanding and step breakdown</td></tr>
+          <tr><td><code>OPENAI_API_KEY</code></td><td><span class="req opt">Optional</span></td><td class="wrap">Voice notes and in-app recording; also used for AI text if there's no Anthropic key</td></tr>
+          <tr><td>Model names</td><td><span class="req opt">No</span></td><td class="wrap"><code>ANTHROPIC_MODEL</code>, <code>OPENAI_MODEL</code>, <code>TRANSCRIBE_MODEL</code>. Defaults <code>claude-haiku-5-5</code>, <code>gpt-4o-mini</code>, <code>whisper-1</code>; check these are still current.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="hosting">
+      <h2>Hosting steps</h2>
+      <p>First, run the tests locally. They should print <code>pass 36, fail 0</code>.</p>
+      <div class="code"><button type="button" data-copy>Copy</button><pre><code>unzip unclutteredmind.zip && cd unclutteredmind
+npm test
+cp .env.example .env    # set APP_USERNAME and APP_PASSWORD
+npm start               # http://localhost:3000</code></pre></div>
+
+      <div class="option">
+        <h3>Option A: VPS with Docker Compose and Caddy <span class="badge">Recommended</span></h3>
+        <p class="muted">Any small Ubuntu/Debian VPS (1 vCPU, 512 MB is plenty). Caddy handles HTTPS certificates automatically.</p>
+        <ol class="steps">
+          <li><div><strong>Point DNS.</strong> Create an <code>A</code> record for the subdomain (e.g. <code>app.unclutteredmind.com</code>) pointing at the VPS IP.</div></li>
+          <li><div><strong>Install Docker and open the firewall.</strong><div class="code"><button type="button" data-copy>Copy</button><pre><code>curl -fsSL https://get.docker.com | sh
+ufw allow OpenSSH && ufw allow 80 && ufw allow 443 && ufw enable</code></pre></div></div></li>
+          <li><div><strong>Upload and configure.</strong> Set at least <code>DOMAIN</code>, <code>APP_USERNAME</code>, <code>APP_PASSWORD</code>, <code>APP_ORIGIN</code> and <code>TZ</code>. Compose already sets <code>DATA_DIR=/data</code> and <code>TRUST_PROXY=1</code>.<div class="code"><button type="button" data-copy>Copy</button><pre><code>unzip unclutteredmind.zip && cd unclutteredmind
+cp .env.example .env && nano .env</code></pre></div></div></li>
+          <li><div><strong>Start it.</strong><div class="code"><button type="button" data-copy>Copy</button><pre><code>docker compose up -d --build
+docker compose logs -f app</code></pre></div></div></li>
+          <li><div><strong>Check.</strong> <code>https://&lt;domain&gt;/healthz</code> returns <code>{"ok":true,…}</code> and the site shows the sign-in screen. After the first password sign-in it offers to set up Face ID / Touch ID. To update later: upload the new code and run <code>docker compose up -d --build</code>. Data is kept in the <code>um-data</code> volume.</div></li>
+        </ol>
+        <div class="callout tip"><strong>Tested</strong><span>The Docker image has been built and run: the health check passes, tasks survive a container restart, and the daily backup is written.</span></div>
+      </div>
+
+      <div class="option">
+        <h3>Option B: Render, Railway or Fly.io</h3>
+        <ol class="steps">
+          <li><div>Push the folder to a private GitHub repo and create a web service from the <code>Dockerfile</code>.</div></li>
+          <li><div>Add a persistent disk mounted at <code>/data</code> (1 GB).</div></li>
+          <li><div>Set instances to 1, turn off autoscaling, and choose a plan that never sleeps.</div></li>
+          <li><div>Set <code>APP_USERNAME</code>, <code>APP_PASSWORD</code>, <code>APP_ORIGIN</code>, <code>TZ=Europe/London</code>, <code>DATA_DIR=/data</code>, <code>TRUST_PROXY=1</code> and the WhatsApp/AI variables.</div></li>
+          <li><div>Set the health check path to <code>/healthz</code> and add the custom domain.</div></li>
+        </ol>
+      </div>
+
+      <div class="option">
+        <h3>Option C: plain Node on an existing server</h3>
+        <p>Run <code>node server.js</code> under systemd or pm2, behind Nginx or Caddy for HTTPS, with <code>TRUST_PROXY=1</code>.</p>
+        <div class="code"><button type="button" data-copy>Copy</button><pre><code>[Unit]
+Description=Uncluttered Mind
+After=network.target
+
+[Service]
+WorkingDirectory=/opt/unclutteredmind
+ExecStart=/usr/bin/node server.js
+Restart=always
+User=www-data
+EnvironmentFile=/opt/unclutteredmind/.env
+
+[Install]
+WantedBy=multi-user.target</code></pre></div>
+      </div>
+    </section>
+
+    <section id="whatsapp-setup">
+      <h2>WhatsApp setup</h2>
+      <p>Do this once the site is live on HTTPS, because Meta has to reach <code>/webhook</code>.</p>
+      <ol class="steps">
+        <li><div><strong>Create the Meta app.</strong> developers.facebook.com → My Apps → Create app → type <strong>Business</strong>, linked to RestoRefine's Meta Business account. Add the <strong>WhatsApp</strong> product.</div></li>
+        <li><div><strong>Add the business number.</strong> WhatsApp → API Setup → Add phone number, then verify it. Copy the <strong>Phone number ID</strong> into <code>WA_PHONE_NUMBER_ID</code>. Set up business verification and a payment method in Business Settings so the messaging limits aren't tiny.</div></li>
+        <li><div><strong>Make a permanent token.</strong> business.facebook.com → Settings → Users → System users → Add (Admin). Assign the app and the WhatsApp account with full control. Generate a token with <code>whatsapp_business_messaging</code> and <code>whatsapp_business_management</code>, set to never expire, and put it in <code>WA_TOKEN</code>. The 24-hour token on the API Setup page won't do.</div></li>
+        <li><div><strong>Connect the webhook.</strong> WhatsApp → Configuration → Webhook → Edit. Callback URL <code>https://&lt;domain&gt;/webhook</code>, verify token = <code>WA_VERIFY_TOKEN</code>. Click Verify and save, then subscribe to the <strong>messages</strong> field. Put App settings → Basic → App secret into <code>WA_APP_SECRET</code>, restart the app, and set the Meta app to <strong>Live</strong>.</div></li>
+        <li><div><strong>Set the recipient.</strong> Rohit's personal number goes in <code>WA_TO</code>.</div></li>
+        <li><div><strong>Create the templates</strong> in WhatsApp Manager → Message templates. Both are <strong>Utility</strong>, <strong>English (UK)</strong>, body <code>Hi, it's Uncluttered Mind. {{1}} Reply here any time.</code>, sample <code>Time for: Call the bank. 15 min, until 2:15pm.</code>
+          <div class="tablewrap"><table>
+            <thead><tr><th>Template</th><th>Needed</th><th>Buttons</th><th>Variable</th></tr></thead>
+            <tbody>
+              <tr><td><code>unclutteredmind_reminder</code></td><td><span class="req yes">Yes</span></td><td>None</td><td><code>WA_TEMPLATE_NAME</code></td></tr>
+              <tr><td><code>unclutteredmind_task</code></td><td><span class="req opt">Recommended</span></td><td class="wrap">Quick reply, in this order: <code>Done</code>, <code>+15 min</code>, <code>Tomorrow</code></td><td><code>WA_TEMPLATE_BUTTONS_NAME</code></td></tr>
+            </tbody>
+          </table></div></div></li>
+        <li><div><strong>Test it.</strong> Restart the app and check the logs show no WhatsApp warnings. Text <strong>hi</strong> from Rohit's phone and the help message should come back. Then press Settings → Send a test WhatsApp in the app.</div></li>
+      </ol>
+      <div class="callout warn"><strong>Check with Rohit before moving the number</strong><span>If the business number is currently used in the WhatsApp Business app on a phone, Meta's onboarding may move it to the API, and it would then stop working in the phone app. Read Meta's screen carefully. A dedicated number for the bot avoids the issue.</span></div>
+      <div class="callout tip"><strong>Costs</strong><span>Meta charges for template messages; check its current WhatsApp pricing. Messages sent inside the 24-hour window are replies to the user and work differently.</span></div>
+    </section>
+
+    <section id="ai">
+      <h2>AI keys</h2>
+      <p>Both are optional. If a call fails or times out, the app quietly falls back to its built-in parser. Set a monthly spend limit in each provider's console.</p>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Feature</th><th>Key</th><th>Without it</th></tr></thead>
+        <tbody>
+          <tr><td>Understanding messy brain dumps</td><td><code>ANTHROPIC_API_KEY</code> or <code>OPENAI_API_KEY</code></td><td class="wrap">Built-in rule parser</td></tr>
+          <tr><td>Small steps, <code>STUCK</code></td><td>Same</td><td class="wrap">Button hidden; manual steps still work</td></tr>
+          <tr><td>WhatsApp voice notes, in-app recording</td><td><code>OPENAI_API_KEY</code></td><td class="wrap">Bot asks you to type; Chrome, Edge and Safari still have in-browser speech recognition</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="golive">
+      <h2>Go-live checklist</h2>
+      <p class="progress" id="progress" aria-live="polite"><b>0</b> of 12 done. Ticks are saved in this browser only.</p>
+      <ul class="checklist" id="checklist">
+        <li><label><input type="checkbox" id="c1"><span><code>https://&lt;domain&gt;/healthz</code> returns <code>ok: true</code></span></label></li>
+        <li><label><input type="checkbox" id="c2"><span><code>APP_USERNAME</code>, <code>APP_PASSWORD</code> and <code>APP_ORIGIN</code> set; the sign-in screen appears and Face ID / passkey sign-in works on the phone</span></label></li>
+        <li><label><input type="checkbox" id="c3"><span>Persistent disk mounted at <code>DATA_DIR</code>; <code>unclutteredmind.db</code> appears after first start</span></label></li>
+        <li><label><input type="checkbox" id="c4"><span>Exactly one instance, and it never sleeps</span></label></li>
+        <li><label><input type="checkbox" id="c5"><span><code>TRUST_PROXY=1</code> behind the proxy or platform</span></label></li>
+        <li><label><input type="checkbox" id="c6"><span><code>TZ</code> correct: a task said for 3pm shows as 3pm</span></label></li>
+        <li><label><input type="checkbox" id="c7"><span>Permanent WhatsApp token, webhook verified, <code>messages</code> subscribed, <code>WA_APP_SECRET</code> set</span></label></li>
+        <li><label><input type="checkbox" id="c8"><span><code>unclutteredmind_reminder</code> template approved (and the buttons template, if used)</span></label></li>
+        <li><label><input type="checkbox" id="c9"><span>Test WhatsApp received, and replying DONE to a reminder works</span></label></li>
+        <li><label><input type="checkbox" id="c10"><span>Uptime monitor (e.g. UptimeRobot) checks <code>/healthz</code> every 5 minutes</span></label></li>
+        <li><label><input type="checkbox" id="c11"><span>Off-server copy of backups scheduled</span></label></li>
+        <li><label><input type="checkbox" id="c12"><span>On Rohit's phone: open the site, then Share → Add to Home Screen</span></label></li>
+      </ul>
+    </section>
+
+    <section id="running">
+      <h2>Running it</h2>
+      <ul>
+        <li><strong>Logs:</strong> one JSON line per event (<code>docker compose logs -f app</code>). Watch for <code>whatsapp send failed</code> (it includes Meta's error code and a hint), <code>WhatsApp could not deliver a message</code> and <code>webhook signature mismatch</code>.</li>
+        <li><strong>Backups:</strong> written daily to <code>DATA_DIR/backups/</code>, 14 kept. Copy them off the server daily, e.g. <code>docker compose cp app:/data/backups ./backups-$(date +%F)</code> from cron.</li>
+        <li><strong>Restore:</strong> stop the app, delete <code>unclutteredmind.db-wal</code> / <code>-shm</code> if present, copy a backup over <code>DATA_DIR/unclutteredmind.db</code>, then start it. If the database can't be opened, the app logs an error and exits rather than starting empty.</li>
+        <li><strong>Updates:</strong> replace the code, run <code>npm test</code>, then redeploy.</li>
+        <li><strong>Security built in:</strong>
+          <ul>
+            <li>Login cookie: HttpOnly, SameSite, Secure, signed with HMAC, valid for 90 days.</li>
+            <li>Username + password, then Face ID / Touch ID / fingerprint passkeys (only the public key is stored on the server).</li>
+            <li>Lockout after 5 wrong tries; the app won't start in production without a login.</li>
+            <li>A CSRF header is required on every write.</li>
+            <li>Strict Content-Security-Policy.</li>
+            <li>Webhook signatures are checked.</li>
+            <li>Only <code>WA_TO</code> can command the bot, and duplicate deliveries are ignored.</li>
+          </ul>
+          Keep <code>.env</code> and backups private, since task text can be personal.</li>
+      </ul>
+    </section>
+
+    <section id="trouble">
+      <h2>Troubleshooting</h2>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Symptom</th><th>Likely cause and fix</th></tr></thead>
+        <tbody>
+          <tr><td class="wrap">Webhook "Verify and save" fails</td><td class="wrap">Site not reachable over HTTPS, or <code>WA_VERIFY_TOKEN</code> mismatch. <code>curl "https://&lt;domain&gt;/webhook?hub.mode=subscribe&amp;hub.verify_token=TOKEN&amp;hub.challenge=hi"</code> should return <code>hi</code>.</td></tr>
+          <tr><td class="wrap">Replies to the bot do nothing</td><td class="wrap"><code>messages</code> not subscribed, app not Live, <code>WA_TO</code> doesn't match the sender, or wrong <code>WA_APP_SECRET</code> (logs: <code>webhook signature mismatch</code>)</td></tr>
+          <tr><td class="wrap">Send fails, code 131047</td><td class="wrap">Outside the 24h window with no approved template: set <code>WA_TEMPLATE_NAME</code></td></tr>
+          <tr><td class="wrap">Code 132001</td><td class="wrap">Template name or language doesn't match the approved one; check <code>WA_TEMPLATE_LANG</code></td></tr>
+          <tr><td class="wrap">Code 190, "Session has expired"</td><td class="wrap">Temporary token in use: create the permanent System User token</td></tr>
+          <tr><td class="wrap">Code 131030</td><td class="wrap">Recipient not allowed in test mode: add it in API Setup, or go Live</td></tr>
+          <tr><td class="wrap">Reminders an hour off</td><td class="wrap">Wrong <code>TZ</code></td></tr>
+          <tr><td class="wrap">No reminders at all</td><td class="wrap">WhatsApp not configured (the app's pill says "WhatsApp off"), quiet hours, a sleeping instance, or a heads-up setting is Off</td></tr>
+          <tr><td class="wrap">Data disappears after a deploy</td><td class="wrap">No persistent disk, or <code>DATA_DIR</code> isn't on it</td></tr>
+          <tr><td class="wrap">Everyone logged out</td><td class="wrap"><code>APP_USERNAME</code>, <code>APP_PASSWORD</code> or <code>SESSION_SECRET</code> changed (expected)</td></tr>
+          <tr><td class="wrap">Mic says it can't listen</td><td class="wrap">Firefox has no speech recognition: add <code>OPENAI_API_KEY</code> for recording. The page must be HTTPS.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="api">
+      <h2>API reference</h2>
+      <p>All <code>/api/*</code> calls need the session cookie (log in first). Writes also need the header <code>x-um: 1</code>.</p>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Method and path</th><th>Body</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td><code>POST /api/login</code></td><td><code>{username, password}</code></td><td class="wrap">Sets the session cookie</td></tr>
+          <tr><td><code>POST /api/passkey/login/…</code></td><td>WebAuthn</td><td class="wrap">Sign in with Face ID / Touch ID</td></tr>
+          <tr><td><code>POST /api/passkey/register/…</code></td><td>WebAuthn</td><td class="wrap">Add a passkey (signed in)</td></tr>
+          <tr><td><code>POST /api/logout</code></td><td>–</td><td class="wrap">Clears it</td></tr>
+          <tr><td><code>GET /api/state</code></td><td>–</td><td class="wrap">Tasks, repeats, energy, settings, feature flags</td></tr>
+          <tr><td><code>POST /api/parse</code></td><td><code>{text, date?}</code></td><td class="wrap">Brain dump → preview items (<code>source: ai | rules</code>)</td></tr>
+          <tr><td><code>POST /api/items</code></td><td><code>{items}</code></td><td class="wrap">Adds tasks and repeats</td></tr>
+          <tr><td><code>POST /api/tasks/:id/:action</code></td><td>–</td><td class="wrap"><code>done</code>, <code>undo</code>, <code>snooze</code>, <code>tomorrow</code>, <code>place</code>, <code>today</code>, <code>startnow</code>, <code>someday</code>, <code>delete</code></td></tr>
+          <tr><td><code>PUT /api/tasks/:id/steps</code></td><td><code>{steps}</code></td><td class="wrap">Replace steps; finishing all steps completes the task</td></tr>
+          <tr><td><code>POST /api/tasks/:id/breakdown</code></td><td>–</td><td class="wrap">AI steps</td></tr>
+          <tr><td><code>POST /api/rescue</code></td><td><code>{date}</code></td><td class="wrap">Keep top 3; <code>/api/rescue/undo</code> with <code>{ids}</code> reverses it</td></tr>
+          <tr><td><code>POST /api/energy</code></td><td><code>{date, level}</code></td><td class="wrap"><code>low</code> | <code>ok</code> | <code>high</code></td></tr>
+          <tr><td><code>DELETE /api/routines/:id</code></td><td>–</td><td class="wrap">Stop a repeat</td></tr>
+          <tr><td><code>PUT /api/settings</code></td><td>settings</td><td class="wrap">Values are clamped on the server</td></tr>
+          <tr><td><code>POST /api/whatsapp/test</code></td><td>–</td><td class="wrap">Sends a test message</td></tr>
+          <tr><td><code>POST /api/transcribe</code></td><td>raw audio</td><td class="wrap">In-app recording → text</td></tr>
+          <tr><td><code>GET/POST /webhook</code></td><td>Meta</td><td class="wrap">WhatsApp verification and events</td></tr>
+          <tr><td><code>GET /healthz</code></td><td>–</td><td class="wrap">Health check</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="limits">
+      <h2>Limits and next steps</h2>
+      <ul>
+        <li><strong>Single user:</strong> one login, one WhatsApp recipient. Opening it to other people needs sign-up, per-user data, per-user WhatsApp opt-in, billing and a privacy policy. Treat that as a separate project.</li>
+        <li><strong>No phone push notifications</strong> outside WhatsApp yet. Web push would need a service worker and VAPID keys.</li>
+        <li><strong>No Google or Outlook calendar sync</strong> yet. Shift patterns have to be entered as repeats.</li>
+        <li><strong>One timezone</strong> per deployment (<code>TZ</code>).</li>
+      </ul>
+    </section>
+
+    <footer>
+      <span>Uncluttered Mind 2.0 · Handover prepared 11 October 2026</span>
+      <span>The full code, tests and a Markdown copy of this guide (<code>DEPLOY.md</code>) are in <code>unclutteredmind.zip</code>.</span>
+    </footer>
+  </main>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  // Copy buttons
+  document.querySelectorAll('[data-copy]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var text = btn.parentElement.querySelector('pre').innerText;
+      var done = function (label) { btn.textContent = label; setTimeout(function () { btn.textContent = 'Copy'; }, 1600); };
+      var fallback = function () {
+        var range = document.createRange(); range.selectNodeContents(btn.parentElement.querySelector('pre'));
+        var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range);
+        done('Selected');
+      };
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(function () { done('Copied'); }, fallback);
+        else fallback();
+      } catch (e) { fallback(); }
+    });
+  });
+
+  // Go-live checklist, remembered per browser
+  var KEY = 'um-handover-checklist';
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('#checklist input'));
+  var saved = {};
+  try { saved = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { saved = {}; }
+  var update = function () {
+    var n = boxes.filter(function (b) { return b.checked; }).length;
+    document.getElementById('progress').innerHTML = '<b>' + n + '</b> of ' + boxes.length + ' done' + (n === boxes.length ? '. Ready to go live.' : '. Ticks are saved in this browser only.');
+  };
+  boxes.forEach(function (b) {
+    b.checked = !!saved[b.id];
+    b.addEventListener('change', function () {
+      saved[b.id] = b.checked;
+      try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (e) { /* storage unavailable */ }
+      update();
+    });
+  });
+  update();
+
+  // Highlight the section in view
+  var links = Array.prototype.slice.call(document.querySelectorAll('#toc a'));
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) links.forEach(function (a) { a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id); });
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    links.forEach(function (a) { var s = document.querySelector(a.getAttribute('href')); if (s) io.observe(s); });
+  }
+})();
+</script>
+</body></html>
