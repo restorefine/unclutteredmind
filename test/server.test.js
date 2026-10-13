@@ -67,7 +67,9 @@ async function startServer() {
       NODE_ENV: 'test', PORT: String(port), HOST: '127.0.0.1', DATA_DIR: dataDir, TZ: 'Europe/London', TICK_MS: '3600000',
       APP_USERNAME: 'Rohit', APP_PASSWORD: 'correct horse battery', WA_TOKEN: 'wa-token', WA_PHONE_NUMBER_ID: 'PHONE123', WA_TO: '+44 7700 900123', WA_VERIFY_TOKEN: 'verify-me',
       WA_APP_SECRET: APP_SECRET, WA_API_BASE: mockBase, WA_TEMPLATE_NAME: 'unclutteredmind_reminder',
-      ANTHROPIC_API_KEY: 'a-key', ANTHROPIC_BASE_URL: mockBase, OPENAI_API_KEY: 'o-key', OPENAI_BASE_URL: mockBase
+      ANTHROPIC_API_KEY: 'a-key', ANTHROPIC_BASE_URL: mockBase, OPENAI_API_KEY: 'o-key', OPENAI_BASE_URL: mockBase,
+      // Set (even empty) so a production .env in the project folder can't leak into the tests.
+      APP_ORIGIN: '', TRUST_PROXY: '0', COOKIE_SECURE: '0', SESSION_SECRET: ''
     }),
     stdio: ['ignore', 'pipe', 'pipe']
   });

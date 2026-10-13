@@ -177,7 +177,8 @@
       $('loginPass').value = '';
       let asked = false;
       try { asked = localStorage.getItem(ASK_KEY) === '1'; } catch (_) { /* storage blocked */ }
-      if (!r.passkeys && !asked && await canUsePlatformPasskey()) return showPasskeySetup();
+      // Asked once per device, so everyone who signs in on a new phone or laptop gets the offer.
+      if (!asked && await canUsePlatformPasskey()) return showPasskeySetup();
       await boot();
     } catch (err) { loginError(err.message); }
   });
@@ -226,6 +227,12 @@
       await boot();
       toast('Passkey set up. Next time, just tap Passkey.');
     } catch (err) {
+      // A passkey synced from another device (iCloud Keychain, Google) already covers this one.
+      if (err && err.name === 'InvalidStateError') {
+        try { localStorage.setItem(ASK_KEY, '1'); } catch (_) { /* fine */ }
+        await boot();
+        return toast('This device already has a passkey. Next time, just tap Passkey.');
+      }
       const m = passkeyError(err);
       if (m) { $('setupError').textContent = m; $('setupError').hidden = false; }
     }
