@@ -1,12 +1,12 @@
-# Production setup for a server that ALREADY runs a web server (Caddy / Nginx) on ports 80 and 443.
-# This runs only the app, on a private port (127.0.0.1:3100). Point the existing web server at it:
-#   Caddy on the host:      www.unclutteredmind.co.uk { reverse_proxy 127.0.0.1:3100 }
-#   Caddy in Docker:        docker network connect unclutteredmind <caddy container>
-#                           www.unclutteredmind.co.uk { reverse_proxy unclutteredmind:3000 }
+# Production setup for a server that ALREADY runs something else on ports 80 and 443.
+# The app is published through a Cloudflare Tunnel: cloudflared connects out to Cloudflare, which serves
+# HTTPS for the domain and forwards visitors to the app. No ports 80/443 needed, nothing else on the server touched.
+# The app is also on 127.0.0.1:3100 for health checks from the server itself.
 # Fresh server with nothing on 80/443? Use docker-compose.standalone.yml instead (brings its own Caddy).
 #
-#   1. cp .env.example .env   and fill it in
-#   2. docker compose up -d --build
+#   1. cp .env.example .env   and fill it in, including TUNNEL_TOKEN (Cloudflare Zero Trust > Networks > Tunnels)
+#   2. In the tunnel, add a public hostname: www.unclutteredmind.co.uk -> HTTP -> unclutteredmind:3000
+#   3. docker compose up -d --build
 services:
   app:
     build: .
@@ -22,6 +22,18 @@ services:
       - um-data:/data
     ports:
       - "127.0.0.1:3100:3000"
+    networks:
+      - unclutteredmind
+
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    container_name: unclutteredmind-tunnel
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run
+    environment:
+      TUNNEL_TOKEN: ${TUNNEL_TOKEN:?Set TUNNEL_TOKEN in .env (Cloudflare Zero Trust > Networks > Tunnels)}
+    depends_on:
+      - app
     networks:
       - unclutteredmind
 

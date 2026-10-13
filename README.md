@@ -46,7 +46,7 @@ public/app.js          Browser app
 public/app.css         Styles (light + dark)
 public/index.html      Page shell
 test/                  node:test suites
-Dockerfile, docker-compose.yml   Production: app only, behind an existing Caddy/Nginx (port 127.0.0.1:3100)
+Dockerfile, docker-compose.yml   Production: app + Cloudflare Tunnel, for a server that already uses ports 80/443
 docker-compose.standalone.yml, Caddyfile   Production on a fresh server: app + its own Caddy (automatic HTTPS)
 ```
 
